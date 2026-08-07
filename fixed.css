@@ -1,0 +1,77 @@
+/* ============================= */
+/* FIX 1: appearance property */
+/* ============================= */
+input.vis-configuration.vis-config-range {
+  appearance: none;
+  -webkit-appearance: none;
+
+  background-color: transparent;
+  border: 0;
+  height: 20px;
+  width: 300px;
+}
+
+/* ============================= */
+/* FIX 2: vertical-align issue */
+/* Replace with flexbox */
+/* ============================= */
+div.vis-color-picker div.vis-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #f7f7f7;
+  border: 2px solid #d9d9d9;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 25px;
+  width: 68px;
+}
+
+/* Fix labels using vertical-align */
+div.vis-color-picker div.vis-initial-color,
+div.vis-color-picker div.vis-new-color {
+  display: flex;
+  align-items: center;
+}
+
+/* ============================= */
+/* FIX 3: float + inline-block conflict */
+/* ============================= */
+div.vis-configuration {
+  display: block;
+  float: left;
+}
+
+/* OR modern approach (optional better) */
+/*
+div.vis-configuration-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+*/
+
+/* ============================= */
+/* FIX 4: scrolling fix */
+/* ============================= */
+.ts-dropdown-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 200px;
+
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* ============================= */
+/* FIX 5: font smoothing fix */
+/* ============================= */
+.ts-control input {
+  color: #303030;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 18px;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,51 @@
+{
+  "user_101": {
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "account_age_days": 720,
+    "avg_transaction_amount": 150.0,
+    "country": "US"
+  },
+  "user_102": {
+    "name": "Bob Smith",
+    "email": "bob@example.com",
+    "account_age_days": 30,
+    "avg_transaction_amount": 200.0,
+    "country": "US"
+  },
+  "user_103": {
+    "name": "Carol White",
+    "email": "carol@example.com",
+    "account_age_days": 5,
+    "avg_transaction_amount": 100.0,
+    "country": "IN"
+  },
+  "user_104": {
+    "name": "Dave Brown",
+    "email": "dave@example.com",
+    "account_age_days": 365,
+    "avg_transaction_amount": 80.0,
+    "country": "UK"
+  },
+  "user_105": {
+    "name": "Eve Davis",
+    "email": "eve@example.com",
+    "account_age_days": 10,
+    "avg_transaction_amount": 50.0,
+    "country": "RU"
+  },
+  "user_106": {
+    "name": "Frank Miller",
+    "email": "frank@example.com",
+    "account_age_days": 200,
+    "avg_transaction_amount": 95.0,
+    "country": "US"
+  },
+  "user_107": {
+    "name": "Grace Lee",
+    "email": "grace@example.com",
+    "account_age_days": 150,
+    "avg_transaction_amount": 110.0,
+    "country": "US"
+  }
+}

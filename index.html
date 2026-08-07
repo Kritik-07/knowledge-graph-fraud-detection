@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cyber Threat Detection — Live Dashboard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #0D1117;
+    color: #E6EDF3;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── header ── */
+header {
+    background: #161B22;
+    border-bottom: 1px solid #30363D;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+header h1 { font-size: 16px; letter-spacing: 1px; }
+.header-stats { display: flex; gap: 20px; font-size: 12px; color: #8B949E; }
+.stat-pill {
+    background: #21262D;
+    border: 1px solid #30363D;
+    border-radius: 20px;
+    padding: 3px 12px;
+}
+.stat-pill span { color: #E6EDF3; font-weight: bold; }
+
+/* ── main layout ── */
+.main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ── left panel ── */
+.left {
+    width: 320px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #30363D;
+    overflow: hidden;
+}
+
+/* ── graph panel ── */
+.graph-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.graph-toolbar {
+    background: #161B22;
+    border-bottom: 1px solid #30363D;
+    padding: 8px 12px;
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.graph-toolbar input {
+    flex: 1;
+    background: #21262D;
+    border: 1px solid #30363D;
+    color: #E6EDF3;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+iframe {
+    flex: 1;
+    border: none;
+    background: #0D1117;
+}
+
+/* ── left sections ── */
+.section {
+    border-bottom: 1px solid #30363D;
+    flex-shrink: 0;
+}
+.section-header {
+    background: #161B22;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #8B949E;
+    text-transform: uppercase;
+}
+
+/* manual input */
+.input-area { padding: 10px; }
+textarea {
+    width: 100%;
+    height: 160px;
+    background: #21262D;
+    color: #E6EDF3;
+    border: 1px solid #30363D;
+    border-radius: 4px;
+    padding: 8px;
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+    resize: none;
+}
+.btn {
+    width: 100%;
+    padding: 9px;
+    margin-top: 8px;
+    background: #238636;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+}
+.btn:hover { background: #2ea043; }
+.btn.pause { background: #b08800; }
+.btn.pause:hover { background: #d4a017; }
+
+/* result box */
+.result-box{
+    margin: 10px;
+    background: #0D1117;
+    border: 1px solid #30363D;
+    border-radius: 6px;
+    padding: 12px;
+
+    font-family: "Segoe UI", sans-serif;   /* ❌ remove monospace */
+    font-size: 13px;
+    line-height: 1.6;
+
+    color: #E6EDF3;   /* brighter text */
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.result-box strong {
+    color: #2F88FF;
+}
+
+.result-box .risk {
+    color: #FEB019;
+    font-weight: bold;
+}
+
+.result-box .fraud {
+    color: #FF3A3A;
+}
+
+.result-box .safe {
+    color: #2ea043;
+}
+
+/* sim controls */
+.sim-ctrl { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.ctrl-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+}
+.ctrl-row label { color: #8B949E; }
+input[type=range] { flex: 1; margin: 0 10px; accent-color: #238636; }
+.ctrl-val { color: #2F88FF; font-weight: bold; min-width: 30px; text-align: right; }
+
+/* live feed */
+.feed {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 0;
+}
+.feed-item {
+    background: #161B22;
+    border: 1px solid #30363D;
+    border-left: 3px solid #30363D;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 11px;
+    animation: fadeIn 0.3s ease;
+}
+.feed-item.fraud     { border-left-color: #FF3A3A; background: #1a0e0e; }
+.feed-item.suspicious{ border-left-color: #FEB019; background: #1a1500; }
+.feed-item.safe      { border-left-color: #238636; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; } }
+
+.feed-row1 { display: flex; justify-content: space-between; margin-bottom: 2px; }
+.feed-cid  { font-weight: bold; color: #2F88FF; }
+.feed-badge{
+    border-radius: 3px; padding: 1px 6px; font-size: 10px; font-weight: bold;
+}
+.badge-fraud      { background: #FF3A3A22; color: #FF3A3A; border: 1px solid #FF3A3A55; }
+.badge-suspicious { background: #FEB01922; color: #FEB019; border: 1px solid #FEB01955; }
+.badge-safe       { background: #23863622; color: #2ea043; border: 1px solid #23863655; }
+.feed-row2 { color: #8B949E; font-size: 10px; }
+.feed-score { color: #E6EDF3; font-weight: bold; }
+
+/* sim speed buttons */
+.speed-btns { display: flex; gap: 6px; margin-top: 4px; }
+.speed-btn {
+    flex: 1; padding: 5px; background: #21262D; border: 1px solid #30363D;
+    color: #E6EDF3; border-radius: 4px; cursor: pointer; font-size: 11px;
+}
+.speed-btn:hover { background: #30363D; }
+.speed-btn.active { border-color: #238636; color: #2ea043; }
+</style>
+</head>
+
+<body>
+
+<!-- ── header ── -->
+<header>
+    <h1>🔴 LIVE &nbsp;|&nbsp; Knowledge Graph Cyber Threat Detection</h1>
+    <div class="header-stats">
+        <div class="stat-pill">Processed: <span id="hTot">0</span></div>
+        <div class="stat-pill">🔴 Fraud: <span id="hFr">0</span></div>
+        <div class="stat-pill">🟡 Suspicious: <span id="hSus">0</span></div>
+        <div class="stat-pill">🟢 Safe: <span id="hSafe">0</span></div>
+        <div class="stat-pill">Graph nodes: <span id="hNodes">0</span></div>
+    </div>
+</header>
+
+<!-- ── main ── -->
+<div class="main">
+
+    <!-- LEFT PANEL -->
+    <div class="left">
+
+        <!-- Manual detect -->
+        <div class="section">
+            <div class="section-header">Manual Detection</div>
+            <div class="input-area">
+                <textarea id="txnInput">{
+  "transaction_id": "TXN-DEMO-001",
+  "customer_id": "CUST_1042",
+  "ip_address": "192.168.1.10",
+  "device_used": "mobile_4321",
+  "transaction_amount": 4500.00,
+  "transaction_date": "2024-06-15 02:15:00",
+  "transaction_hour": 2,
+  "account_age_days": 5,
+  "payment_method": "credit card",
+  "customer_location": "New York"
+}</textarea>
+                <button class="btn" onclick="runDetect()">▶ Run Detection</button>
+            </div>
+            <div class="result-box" id="detectResult">Result will appear here…</div>
+        </div>
+
+        <!-- Sim controls -->
+        <div class="section">
+            <div class="section-header">Simulation Controls</div>
+            <div class="sim-ctrl">
+                <div class="ctrl-row">
+                    <label>Speed (evt/s)</label>
+                    <input type="range" id="speedSlider" min="0.1" max="10" step="0.1"
+                           value="1" oninput="onSpeedChange(this.value)">
+                    <span class="ctrl-val" id="speedVal">1.0</span>
+                </div>
+                <div class="speed-btns">
+                    <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
+                    <button class="speed-btn active" onclick="setSpeed(1)">1x</button>
+                    <button class="speed-btn" onclick="setSpeed(3)">3x</button>
+                    <button class="speed-btn" onclick="setSpeed(10)">10x</button>
+                </div>
+                <button class="btn pause" id="pauseBtn" onclick="togglePause()">
+                    ⏸ Pause Simulation
+                </button>
+            </div>
+        </div>
+
+        <!-- Live feed -->
+        <div class="section-header">Live Event Feed</div>
+        <div class="feed" id="liveFeed">
+            <div style="color:#8B949E;font-size:12px;padding:10px;text-align:center">
+                Waiting for events…
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GRAPH PANEL -->
+    <div class="graph-wrap">
+        <div class="graph-toolbar">
+            <input id="searchNode" placeholder="Search node  (e.g. SIM_0012, 10.x.x.x, mobile_…)">
+            <button class="btn" style="width:auto;padding:6px 14px;margin:0"
+                    onclick="searchNode()">Search</button>
+            <button class="btn" style="width:auto;padding:6px 14px;margin:0;background:#1f6feb"
+                    onclick="refreshGraph()">↺ Refresh</button>
+        </div>
+        <iframe id="graphFrame" src="/graph"></iframe>
+    </div>
+
+</div>
+
+<script>
+// ── state ──────────────────────────────────────────────────────────────────
+let paused      = false;
+let lastSeenIdx = 0;
+const MAX_FEED  = 60;
+
+// ── on load ────────────────────────────────────────────────────────────────
+window.onload = () => {
+    loadGraph();
+    pollEvents();
+    pollStats();
+};
+
+// ── graph ──────────────────────────────────────────────────────────────────
+function loadGraph() {
+    document.getElementById("graphFrame").src = "/graph?t=" + Date.now();
+}
+
+function refreshGraph() {
+    fetch("/graph/refresh").then(() => loadGraph());
+}
+
+function searchNode() {
+    const val = document.getElementById("searchNode").value.trim();
+    if (!val) return;
+    const iframe = document.getElementById("graphFrame");
+    if (iframe.contentWindow) {
+        iframe.contentWindow.postMessage({ type: "SEARCH_NODE", value: val }, "*");
+    }
+}
+
+// ── manual detection ────────────────────────────────────────────────────────
+async function runDetect() {
+    const el = document.getElementById("detectResult");
+    try {
+        const data = JSON.parse(document.getElementById("txnInput").value);
+        el.textContent = "Running…";
+        const res = await fetch("/detect", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const result = await res.json();
+        id="fix_ui_1"
+        const formatted = `
+        🔍 Transaction ID: ${result.transaction_id}
+        👤 Customer: ${result.customer_id}
+
+        ⚠️ Risk Score: ${result.risk_score} (${result.decision})
+
+        🧠 Why flagged?
+        ${result.explanation}
+
+        📖 Fraud Story:
+        ${result.fraud_story}
+        `;
+
+        el.innerHTML = formatted.replace(/\n/g, "<br>");
+        // Colour the box by decision
+        el.style.borderColor =
+            result.decision === "Fraud"      ? "#FF3A3A" :
+            result.decision === "Suspicious" ? "#FEB019" : "#238636";
+        setTimeout(loadGraph, 1500);
+    } catch (e) {
+        el.textContent = "Error: " + e.message;
+    }
+}
+
+// ── live event polling (fallback to JSON poll if SSE unavailable) ──────────
+function pollEvents() {
+    setInterval(async () => {
+        if (paused) return;
+
+        try {
+            const res   = await fetch("/stream/events?n=20");
+            const items = await res.json();
+            if (!items.length) return;
+
+            const feed = document.getElementById("liveFeed");
+
+            // Clear placeholder
+            const placeholder = feed.querySelector("[data-placeholder]");
+            if (placeholder) placeholder.remove();
+
+            items.forEach(ev => {
+
+                // Avoid duplicate items
+                if (document.getElementById("fe-" + ev.transaction_id)) return;
+
+                const cls   = ev.decision?.toLowerCase() || "safe";
+                const badge = ev.decision === "Fraud"      ? "badge-fraud" :
+                              ev.decision === "Suspicious" ? "badge-suspicious" :
+                                                             "badge-safe";
+
+                const rules = (ev.rules_triggered || []).join(", ") || "none";
+
+                const div = document.createElement("div");
+                div.className = `feed-item ${cls}`;
+                div.id        = "fe-" + ev.transaction_id;
+
+                div.innerHTML = `
+                  <div class="feed-row1">
+                    <span class="feed-cid">${ev.customer_id}</span>
+                    <span class="feed-badge ${badge}">${ev.decision}</span>
+                  </div>
+                  <div class="feed-row2">
+                    Score: <span class="feed-score">${ev.risk_score}</span>
+                    &nbsp;·&nbsp; $${parseFloat(ev.amount || 0).toFixed(2)}
+                    &nbsp;·&nbsp; ${ev.pattern || ""}
+                    &nbsp;·&nbsp; ${(ev.timestamp || "").slice(11, 19)}
+                  </div>
+                  <div class="feed-row2" style="margin-top:2px;color:#555">
+                    ${rules.length > 60 ? rules.slice(0,60)+"…" : rules}
+                  </div>`;
+
+                // Add to feed
+                feed.prepend(div);
+
+                // 🔥 AUTO ZOOM ON FRAUD (CORRECT PLACE)
+                if (ev.decision === "Fraud") {
+                    setTimeout(() => {
+                        const iframe = document.getElementById("graphFrame");
+
+                        if (iframe && iframe.contentWindow) {
+                            iframe.contentWindow.postMessage({
+                                type: "SEARCH_NODE",
+                                value: ev.transaction_id
+                            }, "*");
+                        }
+                    }, 300); // small delay ensures graph is ready
+                }
+
+            });
+
+            // Limit feed size
+            while (feed.children.length > MAX_FEED) {
+                feed.removeChild(feed.lastChild);
+            }
+
+            // Optional: refresh graph occasionally
+            
+            let refreshCounter = 0;
+
+            refreshCounter++;
+            if (refreshCounter % 3 === 0) {
+    document.getElementById("graphFrame").src =
+        "/graph?t=" + Date.now();
+}
+        
+
+        } catch (e) {
+            // silent fail
+        }
+
+    }, 800);
+}
+
+// ── header stats polling ───────────────────────────────────────────────────
+function pollStats() {
+    setInterval(async () => {
+        try {
+            const res  = await fetch("/stream/stats");
+            const data = await res.json();
+            document.getElementById("hTot"  ).textContent = data.total_processed || 0;
+            document.getElementById("hFr"   ).textContent = data.total_fraud     || 0;
+            document.getElementById("hSus"  ).textContent = data.total_suspicious|| 0;
+            document.getElementById("hSafe" ).textContent = data.total_safe      || 0;
+            document.getElementById("hNodes").textContent = data.graph_nodes     || 0;
+        } catch(e) { /* silent */ }
+    }, 2000);
+}
+
+// ── simulation controls ────────────────────────────────────────────────────
+function onSpeedChange(val) {
+    document.getElementById("speedVal").textContent = parseFloat(val).toFixed(1);
+    fetch(`/stream/config?events_per_second=${val}&viz_every=5`);
+    document.querySelectorAll(".speed-btn").forEach(b => b.classList.remove("active"));
+}
+
+function setSpeed(v) {
+    document.getElementById("speedSlider").value = v;
+    document.getElementById("speedVal").textContent = v.toFixed ? v.toFixed(1) : v;
+    fetch(`/stream/config?events_per_second=${v}&viz_every=5`);
+    document.querySelectorAll(".speed-btn").forEach(b => {
+        b.classList.toggle("active", parseFloat(b.textContent) === v);
+    });
+}
+
+async function togglePause() {
+    paused = !paused;
+    const btn = document.getElementById("pauseBtn");
+    if (paused) {
+        await fetch("/stream/pause");
+        btn.textContent = "▶ Resume Simulation";
+        btn.style.background = "#238636";
+    } else {
+        await fetch("/stream/resume");
+        btn.textContent = "⏸ Pause Simulation";
+        btn.style.background = "#b08800";
+    }
+}
+</script>
+
+</body>
+</html>

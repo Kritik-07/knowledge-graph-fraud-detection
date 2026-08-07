@@ -1,0 +1,102 @@
+[
+  {
+    "transaction_id": "txn_001",
+    "user_id": "user_101",
+    "ip_address": "192.168.1.10",
+    "device_id": "dev_A1",
+    "amount": 250.0,
+    "timestamp": "2024-01-15T10:00:00",
+    "type": "payment",
+    "merchant": "ElectroShop"
+  },
+  {
+    "transaction_id": "txn_002",
+    "user_id": "user_102",
+    "ip_address": "192.168.1.10",
+    "device_id": "dev_B2",
+    "amount": 1800.0,
+    "timestamp": "2024-01-15T10:02:00",
+    "type": "payment",
+    "merchant": "LuxuryGoods"
+  },
+  {
+    "transaction_id": "txn_003",
+    "user_id": "user_103",
+    "ip_address": "192.168.1.10",
+    "device_id": "dev_C3",
+    "amount": 500.0,
+    "timestamp": "2024-01-15T10:03:00",
+    "type": "payment",
+    "merchant": "GadgetMart"
+  },
+  {
+    "transaction_id": "txn_004",
+    "user_id": "user_104",
+    "ip_address": "10.0.0.55",
+    "device_id": "dev_D4",
+    "amount": 75.0,
+    "timestamp": "2024-01-15T11:00:00",
+    "type": "payment",
+    "merchant": "BookStore"
+  },
+  {
+    "transaction_id": "txn_005",
+    "user_id": "user_104",
+    "ip_address": "10.0.0.55",
+    "device_id": "dev_E5",
+    "amount": 120.0,
+    "timestamp": "2024-01-15T11:01:30",
+    "type": "payment",
+    "merchant": "ClothingHub"
+  },
+  {
+    "transaction_id": "txn_006",
+    "user_id": "user_104",
+    "ip_address": "10.0.0.55",
+    "device_id": "dev_F6",
+    "amount": 340.0,
+    "timestamp": "2024-01-15T11:02:45",
+    "type": "payment",
+    "merchant": "SportZone"
+  },
+  {
+    "transaction_id": "txn_007",
+    "user_id": "user_105",
+    "ip_address": "172.16.0.99",
+    "device_id": "dev_G7",
+    "amount": 3500.0,
+    "timestamp": "2024-01-15T14:00:00",
+    "type": "payment",
+    "merchant": "JewelryWorld"
+  },
+  {
+    "transaction_id": "txn_008",
+    "user_id": "user_106",
+    "ip_address": "192.168.2.20",
+    "device_id": "dev_A1",
+    "amount": 90.0,
+    "timestamp": "2024-01-15T15:00:00",
+    "type": "payment",
+    "merchant": "FoodDelivery"
+  },
+  {
+    "transaction_id": "txn_009",
+    "user_id": "user_107",
+    "ip_address": "192.168.2.20",
+    "device_id": "dev_A1",
+    "amount": 210.0,
+    "timestamp": "2024-01-15T15:30:00",
+    "type": "payment",
+    "merchant": "TechStore"
+  },
+  {
+    "transaction_id": "txn_010",
+    "user_id": "user_101",
+    "ip_address": "192.168.3.50",
+    "device_id": "dev_H8",
+    "amount": 4200.0,
+    "timestamp": "2024-01-15T16:00:00",
+    "type": "payment",
+    "merchant": "PremiumElectronics"
+  }
+]
