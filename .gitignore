@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.env
+.kaggle/
+*.pkl
+*.log
+*.sqlite3
+venv/
+.env/
+static/*.png
+static/*.html
