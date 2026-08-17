@@ -52,7 +52,7 @@ The system auto-downloads it on startup. Without credentials, it generates a
 pip install -r requirements.txt
 
 # 2. Run CLI demo (generates dataset, builds graph, visualises)
-python run_demo.py
+
 
 # 3. Start API server
 uvicorn app:app --reload --host 0.0.0.0 --port 8000
