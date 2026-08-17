@@ -352,7 +352,6 @@ async function runDetect() {
             body: JSON.stringify(data),
         });
         const result = await res.json();
-        id="fix_ui_1"
         const formatted = `
         🔍 Transaction ID: ${result.transaction_id}
         👤 Customer: ${result.customer_id}

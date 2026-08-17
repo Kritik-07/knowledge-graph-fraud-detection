@@ -249,7 +249,6 @@ def detect(txn_in: TransactionIn) -> DetectOut:
         customer_id     = dec.customer_id,
         risk_score      = dec.risk_score,
         decision        = dec.label,
-        "final_action": dec.final_action,
         explanation     = dec.explanation,
         triggered_rules = [RuleOut(**r.to_dict()) for r in dec.triggered_rules],
         graph_png_url   = "/graph/png",

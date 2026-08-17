@@ -117,7 +117,14 @@ def visualize_graph_static(
     suspicious_only: bool = False,
     focus_node: Optional[str] = None
 ) -> str:
-    hl: set[str] = set(highlight_nodes or [])
+    hl: set[str] = set()
+    for item in highlight_nodes or []:
+        if isinstance(item, dict):
+            node_id = item.get("node")
+            if node_id:
+                hl.add(str(node_id))
+        else:
+            hl.add(str(item))
 
     # ── subgraph ──────────────────────────────────────────────────────────────
     # 🔥 ALWAYS focus on highlighted nodes (transaction + related)
